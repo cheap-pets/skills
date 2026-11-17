@@ -88,6 +88,7 @@ description: >
 1. **宿主安装（install）**：
    首次使用本技能，或当前工作区 / 宿主尚未注册 `pipeline-*` 槽位子智能体时，**必须由当前实际运行的宿主（harness）将 `<skill 目录>/slots/*.md`（3 个槽位）复制到该宿主自身的 subagents 定义目录下**（例如 Claude Code 为 `.claude/agents/`，其他宿主为其对应的 subagents 定义目录）：
    - 可直接由宿主执行复制，或运行：`node <skill 目录>/scripts/pipeline-ctl.mjs install --target <当前宿主的 subagents 定义目录>`。
+   - **安装后模型适配**：复制完成后查询宿主可用模型（如 ZCode 的 `ListModels`；无法查询则跳过查询直接询问）。三槽位默认别名（`opus` / `sonnet`）在宿主不可用时，向用户说明并给出选择建议——`primary` 选可用最强档、`peer` 优先异构模型、`executor` 选快速高性价比档；用户确认后修改目标目录中对应副本的 `model` 字段。改动仅落在安装产物，源文件保持默认别名；升级重装会覆盖回默认别名，需重新适配。
    - 安装时若目标目录存在旧版角色注册（`pipeline-{explorer,designer,design-reviewer,implementer,verifier,code-reviewer}.md` 等），脚本以 `legacy_found` 列出并提示清理；脚本不自动删除。
    - 若当前宿主不支持自定义 subagents 目录，则退回通用子智能体并在派发块首行注入 `<skill 目录>/agents/<角色文件>.md` 路径，在启动确认窗口告知用户一声。此降级路径无槽位级宿主工具强制，权限仅剩角色契约约束 + `verify-readonly` 校验。
 2. **三个逻辑槽位**（绑定单一事实源为 `slots/pipeline-<slot>.md` frontmatter `model`；`roles.md` 只写槽位名与回退链，不写型号）：
