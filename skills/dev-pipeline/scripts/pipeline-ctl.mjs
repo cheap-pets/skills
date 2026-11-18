@@ -185,6 +185,8 @@ function cmdInit(args) {
   const cwd = process.cwd();
   const taskDir = path.resolve(cwd, taskDirArg);
   fs.mkdirSync(taskDir, { recursive: true });
+  // Scratch dir for role-generated process files (command output dumps etc.); exempt from verify-readonly.
+  fs.mkdirSync(path.join(taskDir, 'tmp'), { recursive: true });
 
   const decisionsPath = path.join(taskDir, 'decisions.md');
   if (!fs.existsSync(decisionsPath)) {
@@ -629,7 +631,8 @@ function captureReadonlySnapshot(taskDir, cwd = process.cwd()) {
   function walk(dir) {
     if (!fs.existsSync(dir)) return;
     for (const entry of fs.readdirSync(dir)) {
-      if (entry === '.readonly-snap.json' || entry === 'run.log') continue;
+      // 'tmp' = scratch area for process files; intentionally unverified.
+      if (entry === '.readonly-snap.json' || entry === 'run.log' || entry === 'tmp') continue;
       const full = path.join(dir, entry);
       const stat = fs.statSync(full);
       if (stat.isDirectory()) {
@@ -825,7 +828,7 @@ function cmdLint() {
     { pattern: /references\/concurrency\.md/, label: 'obsolete concurrency.md path' },
     { pattern: /references\/piece-acceptance\.md/, label: 'obsolete piece-acceptance.md path' },
     { pattern: /BLOCKED\(拆分过粗\)/, label: 'obsolete BLOCKED(拆分过粗)' },
-    { pattern: /\bfast\b/, label: 'obsolete fast slot name (renamed to executor)' },
+    { pattern: /pipeline-fast\.md/, label: 'obsolete pipeline-fast.md slot file' },
   ];
 
   for (const rel of runtimeFiles) {

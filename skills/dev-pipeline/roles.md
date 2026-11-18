@@ -20,7 +20,7 @@
 | explorer（唯一模式） | 探索 / 定位 / 补探索 | `00-task.md` +（定位）`00-repro.txt` | `01-explore*.md` | 路径 + 3 条关键发现 + 未解问题数 + `决策冲突：<N>` |
 | designer / 默认 | 出设计 | `00-task.md` + `01-explore*.md`（可选） | `02-design.md` | 路径 + 方案一句话 + 未解问题数 |
 | designer / 修订 | 评审 REVISE / 人工意见 / 实施偏离 / 补探索 | 最新评审或意见或偏离 + `02-design.md` | `02-design.md` +（评审/人工）回应文件 | 路径 + 方案一句话 + 未解问题数 + 不接受数 + 不可行数 |
-| designer / 精简 | 步骤清单已明确 | `00-task.md` + 步骤清单 | `02-design.md`（薄，不切片） | 同默认 |
+| designer / 精简 | 步骤清单或需求已明确 | `00-task.md` + 步骤清单或需求描述（可选 `01-explore*`） | `02-design.md`（薄，不切片） | 同默认 |
 | designer / 缺陷修复 | `bugfix-verify` B2 | `00-task.md` + `01-explore*.md` | `02-design.md`（≤3 步，回归先行） | 同默认 |
 | design-reviewer（唯一模式：独立） | 评审设计 | `00-task.md` + `02-design.md`（复审另读上轮评审、上轮回应及新增人工意见） | `03-review-r.md` | `VERDICT: APPROVE\|REVISE` + 路径 + blocker/major/minor 数 + 最严重问题一句话 |
 | implementer / 默认 | 整体按设计实施 | `00-task.md` + `02-design.md` + `00-baseline.txt` | `04-impl.md` + 源码 | `STATUS: DONE\|BLOCKED(类型)` + 路径 + 一句话说明 + `决策冲突：<N>` |
@@ -34,17 +34,20 @@
 
 ## 约定
 
-- **槽位别名**：`executor` 也可写作 `exec`。
+- **槽位别名与指名实体**：
+  - 别名：`exec` / `fast` → `executor`；`prime` → `primary`。
+  - **指名解析**：所指名称在宿主已注册为 subagent（含 `pipeline-` 前缀形态）时，直接派发该实体（仅替换槽位绑定，契约注入与写入边界不变）；否则按上表归一。
 - **权限类**（三层保障：槽位级宿主 `tools` 强制（`slots/*.md`）+ 角色级契约约束 + 派发后 `pipeline-ctl.mjs verify-readonly` 确定性校验；通用子智能体降级路径无第一层）：
   - **只写产物**：不改源码、不改设计文档，只写自身输出文件（`verifier` 另可写 `evidence/`）；
   - **改设计**：仅 `designer` 持有，可 Write / Edit `02-design.md` 并 Write 回应文件，不改源码，Bash 仅限只读；
   - **改源码**：仅 `implementer` 持有，可 Edit / Write 源码并 Write 实施记录。
+  - 各权限类角色的过程临时文件（命令输出存盘等）一律写 `.pipeline/<task>/tmp/`，严禁写到仓库其他位置（`verifier` 的验证证据仍写 `evidence/`）。
 - **断点接续（仅限 implementer）**：当 `implementer` 异常中断，其输出文件已存在且首行为占位值 `STATUS: 进行中` 时，调度者重派同一模式并在追加约束注明`接续（沿用原输出文件路径 <path>）`；只读角色（explorer / design-reviewer / verifier / code-reviewer）中断直接重跑，不走接续。
 - **命名与计数键约定**：
   - 段号：`01` 探索、`02` 设计与回应、`03` 设计评审与设计人工意见、`04` 实施、`05` 验证与实施人工意见、`06` 规范审查。同前缀序号按最大序号 + 1 递增，绝不覆盖旧文件。
   - `<键>` 统一枚举：`整体`（整体实施模式）、`片1`..`片S`（逐片模式各片）、`终`（逐片模式的终验阶段）。`04-impl-<键>-修复-N.md` 与 `05-verify-<键>-N.md` 的 `<键>` 严格对应。
   - 回应文件与被回应评审文件同号配对：`02-response-r.md` ↔ `03-review-r.md`；人工修订回应：`02-response-人工-K.md` ↔ `03-human-K.md`。
-  - 辅助协议文件：`00-task.md`（任务定义，≤60 行）、`00-baseline.txt`（基线快照与文件哈希）、`00-repro.txt`（缺陷原始报错栈与长复现日志，可选）、`decisions.md`（已确认决策与回设计/回方案标记）、`run.log`（派发审计台账）。
+  - 辅助协议文件：`00-task.md`（任务定义，≤60 行）、`00-baseline.txt`（基线快照与文件哈希）、`00-repro.txt`（缺陷原始报错栈与长复现日志，可选）、`decisions.md`（已确认决策与回设计/回方案标记）、`run.log`（派发审计台账）、`tmp/`（过程临时文件统一落点，`verify-readonly` 不校验其内容）。
 - **人工意见文件**：
   - 设计意见：写入 `03-human-K.md`（首行 `VERDICT: REVISE`）；
   - 实施意见：写入 `05-human-K.md`（首行 `VERDICT: FAIL`）；

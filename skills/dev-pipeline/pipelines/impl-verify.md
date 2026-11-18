@@ -6,7 +6,7 @@
 
 1. **独立运行时**（非 `dev` P4 / 非 `bugfix-verify` 进入）：
    - 按 `references/start.md` 执行 `pipeline-ctl.mjs init <task_dir>`（任务目录与 `00-baseline.txt` 已存在则跳过 `init`，沿用原基线），写 `00-task.md`（含验收标准、验证命令、验证环境、忽略路径、开关，其中 `on_design_blocked` 默认设为 `ask_user`）。
-   - **设计输入校验**：检查 `.pipeline/<task>/02-design.md`（若用户指定了外部设计文档，复制为 `02-design.md`，原路径记入 `00-task.md`）。确认含「改动清单」「测试计划」「实施步骤」三节：齐全则开启 `references/start.md`「启动确认窗口」后进入 I1；缺任一节则询问用户是用 `design-review` 补全还是终止；若用户只给步骤清单，可派 `designer / 精简` 生成薄 `02-design.md`（标 `未经评审`），展示 ≤15 行摘要经用户确认后继续。
+   - **设计输入校验**：检查 `.pipeline/<task>/02-design.md`（若用户指定了外部设计文档，复制为 `02-design.md`，原路径记入 `00-task.md`）。确认含「改动清单」「测试计划」「实施步骤」三节：齐全则开启 `references/start.md`「启动确认窗口」后进入 I1；缺任一节则询问用户是用 `design-review` 补全还是终止。无设计（用户仅给需求描述或步骤清单，后者为前者子集）时：启动确认窗口一次确认三选一（默认建议 `designer / 精简`；转 `design-review` 从零设计；终止）→ 生成薄 `02-design.md`（标 `未经评审`）→ 展示 ≤15 行摘要经用户确认后进入 I1，并在 `00-task.md` 开关区记一行「设计状态：未经评审」。薄设计路径实施粒度固定 `整体`；用户要求 `逐片 / 逐片验收 / 严格`（含运行中调整，SKILL.md「开关」）时，窗口确认二选一：改 `整体`（同时关闭 `逐片验收`），或转 `dev`。
 2. **验证环境检查**：若 `02-design.md`「测试计划」含 `浏览器` 或 `HTTP` 手段，确认 `00-task.md` 已填写启动命令与 base URL（含 `浏览器` 时确认子智能体具备可用浏览器工具或 E2E 命令，不可用则提示用户改 `HTTP` 或 `人工`）。
 
 ## 阶段与状态转移表
@@ -30,6 +30,7 @@
    - `ask_user`（独立运行 `impl-verify`）：停下向用户汇报偏离类型、设计步骤与证据，建议启用 `design-review` 修订 `02-design.md`，修订完成后以 `implementer / 续做` 模式重进 I1。
 2. **清单外改动处理（S1 `check-scope` 检出 `out_of_scope_changed` 非空）**：
    - 不消耗修复轮 `R`，不派 `verifier`。
+   - `decisions.md` 已记录「微改动快速路径」豁免的项属预期清单外：不停点，传入 `verifier` 追加约束供范围核对，并计入结束汇报「未验证与豁免项」。
    - 若 `on_design_blocked == return_to_design` 且改动确系实施必需（记录在 `04-impl*.md` 中）：自动走回设计流程补入 `02-design.md`「改动清单」，评审通过后直接重跑 `check-scope` 并进 I2（无需重跑 I1）。
    - 其余情形（或未记录在 `04-impl*.md` 中的意外改动）：停下向用户列出 `out_of_scope_changed` 文件，给出三项选择：① 补进 `02-design.md`「改动清单」；② 由用户手动还原后重跑 `check-scope`（调度者不执行 `checkout`）；③ 记入 `decisions.md` 并在 `00-task.md` 忽略路径中豁免后继续。
 3. **验证失败路由（I2 `FAIL` 或 I3 `FAIL`）**：
