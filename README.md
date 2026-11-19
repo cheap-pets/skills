@@ -30,6 +30,7 @@ npx skills add git@github.com:cheap-pets/skills.git --skill dev-pipeline
 | [code-struct](./skills/code-struct) | 2026-11-18 |
 | [code-comments](./skills/code-comments) | 2026-11-18 |
 | [code-restruct](./skills/code-restruct) | 2026-11-18 |
+| [design-razor](./skills/design-razor) | 2026-11-19 |
 
 
 
@@ -99,3 +100,17 @@ node skills/dev-pipeline/scripts/pipeline-ctl.mjs install --target <宿主的 su
 - 支持 JS/TS/Vue、Python、C#、Rust 四类语言分册，其余语言先确认参照分册。
 - 4 步工作流：快速诊断（含早退门禁）→ 轻量规划 → 分批执行与即时验证 → 收尾；≤5 个文件改动零中间文档。
 - 验证默认去探针化：编译/类型检查 + 既有测试（只读冻结）+ 残留扫描，行为变化即停。
+
+
+
+### design-razor
+
+方案收敛与评审技能——防止过度设计、防御性堆料，保持最小充分复杂度：满足目标和硬约束即可。
+
+适用：制定、评审或迭代技术方案，尤其多模型或子智能体协作评审。
+触发：方案制定 / 评审 / 迭代时使用。
+
+- 方案头部维护设计边界（目标、硬约束、非目标）与决策记录（已决 / 暂缓 / 待验证 / 已拒绝），已决事项无新证据不得重提。
+- 收敛级别 `standard` / `robust` 决定问题准入范围；级别一经固定，不为容纳意见而升级。
+- 评审者指令内置于 skill：可自己评审，也可下发子智能体（只传基线与准入范围，不复制完整指令），评审与裁决分离。
+- 明确迭代节奏与停止条件：默认一轮评审 + 一轮复核，目标与硬约束满足且无准入问题即停。
