@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=900">
+<title><!-- 产物标题 --></title>
+<style>
+  /* 样式与版式固定，只改 <body> 内容，不改本节 */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 900px;
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: #ffffff;
+    color: #33383f;
+    font-size: 27px;
+    line-height: 1.75;
+    padding: 0 48px 72px;
+  }
+  /* hero：顶部渐变头图，含 kicker / 主标题 / 副题 / chips（可选） */
+  .hero {
+    margin: 0 -48px 56px;
+    padding: 88px 48px 72px;
+    background: linear-gradient(135deg, #1f2a44 0%, #2d4373 60%, #3a5ba8 100%);
+    color: #fff;
+  }
+  .hero .kicker { font-size: 22px; letter-spacing: 6px; opacity: .75; margin-bottom: 20px; }
+  .hero h1 { font-size: 52px; font-weight: 700; letter-spacing: 2px; }
+  .hero .tagline { font-size: 28px; opacity: .9; margin-top: 28px; line-height: 1.6; }
+  /* chips：hero 内的名称椭圆标签，须单排（断言 offsetTop 唯一） */
+  .chips { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 36px; }
+  .chip {
+    font-size: 22px; padding: 8px 22px; border-radius: 999px; white-space: nowrap;
+    background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.35);
+  }
+  h2 {
+    font-size: 38px; font-weight: 700; color: #1f2a44;
+    margin: 72px 0 32px; display: flex; align-items: center; gap: 18px;
+  }
+  h2::before {
+    content: ""; width: 12px; height: 38px; border-radius: 6px;
+    background: linear-gradient(180deg, #3a5ba8, #6c8fd4);
+  }
+  h3 { font-size: 31px; font-weight: 600; color: #2d4373; margin: 52px 0 24px; }
+  p { margin: 20px 0; }
+  strong { color: #1f2a44; }
+  code {
+    font-family: "JetBrains Mono", Consolas, monospace;
+    font-size: .88em; background: #eef1f7; color: #384d7d;
+    padding: 2px 10px; border-radius: 8px;
+  }
+  /* pre：命令 / 代码块（自动换行，不横向截断） */
+  pre {
+    background: #20232a; color: #e8eaed; border-radius: 16px;
+    padding: 28px 30px; margin: 28px 0; overflow: hidden;
+  }
+  pre code {
+    background: none; color: inherit; padding: 0;
+    font-size: 22px; line-height: 1.7; white-space: pre-wrap; word-break: break-all;
+  }
+  /* blockquote：金句 / 理念 */
+  blockquote {
+    margin: 32px 0; padding: 28px 32px;
+    background: #f0f4fc; border-left: 10px solid #3a5ba8; border-radius: 0 16px 16px 0;
+    color: #2d4373; font-size: 28px;
+  }
+  ul { margin: 20px 0 20px 8px; list-style: none; }
+  li { position: relative; padding-left: 36px; margin: 16px 0; }
+  li::before {
+    content: ""; position: absolute; left: 6px; top: 22px;
+    width: 12px; height: 12px; border-radius: 50%; background: #6c8fd4;
+  }
+  /* table：结构化对比（首列建议限定宽度） */
+  table {
+    width: 100%; border-collapse: collapse; margin: 28px 0;
+    font-size: 24px; line-height: 1.55;
+  }
+  th {
+    background: #2d4373; color: #fff; font-weight: 600;
+    padding: 18px 16px; text-align: left;
+  }
+  th:first-child { border-radius: 14px 0 0 0; }
+  th:last-child { border-radius: 0 14px 0 0; }
+  td { padding: 18px 16px; border-bottom: 1px solid #e5e9f2; vertical-align: top; }
+  tr:nth-child(even) td { background: #f7f9fd; }
+  /* .item：编号卡片，适合并列亮点（标题 + 一行描述） */
+  .item {
+    display: flex; align-items: flex-start; gap: 24px;
+    padding: 30px 32px; margin: 26px 0;
+    background: #f7f9fd; border: 1px solid #e5e9f2; border-radius: 18px;
+  }
+  .item .num {
+    flex: none; width: 48px; height: 48px; border-radius: 50%;
+    background: #3a5ba8; color: #fff; font-size: 26px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .item .body { flex: 1; }
+  .item b { display: block; font-size: 30px; color: #1f2a44; margin-bottom: 8px; }
+  .item span { font-size: 26px; color: #4a5261; }
+  /* .improve：新旧对比卡片，每条含标题 + 子项列表 */
+  .improve { margin: 36px 0; }
+  .improve .head { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+  .improve .num {
+    flex: none; width: 44px; height: 44px; border-radius: 50%;
+    background: #3a5ba8; color: #fff; font-size: 24px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .improve .head b { font-size: 29px; color: #1f2a44; }
+  .improve ul { margin-top: 8px; }
+  .divider { height: 1px; background: #e5e9f2; margin: 64px 0 0; }
+  .footer-hint { margin-top: 60px; text-align: center; color: #9aa3b2; font-size: 22px; }
+</style>
+</head>
+<body>
+
+<!-- ===== hero：kicker（栏目名）/ h1（主标题）/ tagline（副题，可多行）/ chips（多个并列名目时用，须单排） ===== -->
+<div class="hero">
+  <div class="kicker">CHEAP-PETS / SKILLS</div>
+  <h1>发布说明</h1>
+  <div class="tagline">一句话副题<br>第二行副题（可删）</div>
+  <div class="chips">
+    <span class="chip">skill-a</span>
+    <span class="chip">skill-b</span>
+  </div>
+</div>
+
+<!-- ===== 安装（可选）：命令用 pre，命令中的 < > 记得转义为 &lt; &gt; ===== -->
+<h2>安装</h2>
+<pre><code>npx skills add git@github.com:cheap-pets/skills.git --skill skill-a</code></pre>
+
+<!-- ===== 引言块（可选）：金句 / 核心理念 ===== -->
+<blockquote>核心理念：一句话。</blockquote>
+
+<!-- ===== 正文小节：h2 + 段落；小节内分组用 h3 ===== -->
+<h2>一、正文小节标题</h2>
+<p><strong>先说背景</strong>：正文段落，行内代码用 <code>code</code>。</p>
+
+<h3>分组标题</h3>
+
+<!-- table：结构化对比 -->
+<table>
+  <tr><th style="width:19%">列一</th><th style="width:24%">列二</th><th>列三</th></tr>
+  <tr><td><strong>加粗项</strong></td><td>内容</td><td>内容</td></tr>
+</table>
+
+<!-- ul：要点列表 -->
+<ul>
+  <li><strong>要点</strong>：说明文字。</li>
+</ul>
+
+<!-- .item：编号卡片，适合并列亮点 -->
+<div class="item">
+  <span class="num">1</span>
+  <div class="body"><b>亮点标题</b><span>一行描述。</span></div>
+</div>
+
+<!-- 分隔线（多主题长文用） -->
+<div class="divider"></div>
+
+<h2>二、新旧对比小节（示例）</h2>
+
+<!-- .improve：每条 = 编号 + 标题 + 子项 ul -->
+<div class="improve">
+  <div class="head"><span class="num">1</span><b>改进标题</b></div>
+  <ul>
+    <li>旧版：问题一句话。</li>
+    <li>新版：改法一句话。</li>
+  </ul>
+</div>
+
+<!-- ===== 页脚 ===== -->
+<div class="footer-hint">cheap-pets/skills · 2026-11</div>
+
+</body>
+</html>
