@@ -30,7 +30,7 @@ npx skills add git@github.com:cheap-pets/skills.git --skill dev-pipeline
 | [code-struct](./skills/code-struct) | 2026-11-18 |
 | [code-comments](./skills/code-comments) | 2026-11-18 |
 | [code-restruct](./skills/code-restruct) | 2026-11-18 |
-| [design-razor](./skills/design-razor) | 2026-11-19 |
+| [just-enough](./skills/just-enough) | 2026-11-19 |
 
 
 
@@ -103,7 +103,7 @@ node skills/dev-pipeline/scripts/pipeline-ctl.mjs install --target <宿主的 su
 
 
 
-### design-razor
+### just-enough
 
 方案收敛与评审技能——防止过度设计、防御性堆料，保持最小充分复杂度：满足目标和硬约束即可。
 
