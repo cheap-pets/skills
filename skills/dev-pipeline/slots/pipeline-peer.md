@@ -1,6 +1,6 @@
 ---
 name: pipeline-peer
-description: 仅由 dev-pipeline 调度者指派。peer 槽位（异构或独立审查模型），承接 design-reviewer 与 code-reviewer；角色契约由派发首行注入。
+description: 仅由 dev-pipeline / outsource 调度者指派。peer 槽位（异构或独立审查模型），承接 design-reviewer 与 code-reviewer；角色契约由派发首行注入。
 model: opus
 tools: Read, Grep, Glob, Bash, Write
 ---

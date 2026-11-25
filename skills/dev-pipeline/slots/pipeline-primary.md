@@ -1,6 +1,6 @@
 ---
 name: pipeline-primary
-description: 仅由 dev-pipeline 调度者指派。primary 槽位（较强主模型），承接 designer 与 bugfix-verify B1 缺陷定位的 explorer；角色契约由派发首行注入。
+description: 仅由 dev-pipeline / outsource 调度者指派。primary 槽位（较强主模型），承接 designer 与 bugfix-verify B1 缺陷定位的 explorer；角色契约由派发首行注入。
 model: opus
 tools: Read, Grep, Glob, Bash, Write, Edit
 ---

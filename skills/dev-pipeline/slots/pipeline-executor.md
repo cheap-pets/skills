@@ -1,6 +1,6 @@
 ---
 name: pipeline-executor
-description: 仅由 dev-pipeline 调度者指派。executor 槽位（快速高性价比模型），承接常规 explorer、implementer、verifier（implementer 与 verifier 必须各自全新实例）；角色契约由派发首行注入。
+description: 仅由 dev-pipeline / outsource 调度者指派。executor 槽位（快速高性价比模型），承接常规 explorer、implementer、verifier（implementer 与 verifier 必须各自全新实例）；角色契约由派发首行注入。
 model: sonnet
 tools: Read, Grep, Glob, Bash, Write, Edit
 ---
