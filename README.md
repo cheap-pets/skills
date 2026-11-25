@@ -31,6 +31,7 @@ npx skills add git@github.com:cheap-pets/skills.git --skill dev-pipeline
 | [code-comments](./skills/code-comments) | 2026-11-18 |
 | [code-restruct](./skills/code-restruct) | 2026-11-18 |
 | [just-enough](./skills/just-enough) | 2026-11-19 |
+| [outsource](./skills/outsource) | 2026-11-25 |
 
 
 
@@ -114,3 +115,17 @@ node skills/dev-pipeline/scripts/pipeline-ctl.mjs install --target <宿主的 su
 - 收敛级别 `standard` / `robust` 决定问题准入范围；级别一经固定，不为容纳意见而升级。
 - 评审者指令内置于 skill：可自己评审，也可下发子智能体（只传基线与准入范围，不复制完整指令），评审与裁决分离。
 - 明确迭代节奏与停止条件：默认一轮评审 + 一轮复核，目标与硬约束满足且无准入问题即停。
+
+
+
+### outsource
+
+调度者模式技能——激活后主智能体只做任务分派，把小功能、缺陷修复、调研、验证等规模不大的工作外包给子智能体。
+
+适用：一个会话内多次有关联的碎片化任务；单个任务以子智能体一次上下文可完成为限，过大则拆分。
+触发：仅手动激活（用户点名 outsource / 外包 / 调度模式）；未点名不启用。
+
+- 会话级目录 `.outsource/` 沉淀任务简报、进度、总结与可复用代码知识（含踩坑），任务间经知识文件与前置任务衔接，后续关联任务直接复用，中断后可接续。
+- 主会话保持克制：调度者不读源码、设计文档与配置，输入经 brief 路径传递，不进主会话上下文。
+- 沿用 dev-pipeline 的 `pipeline-{primary,peer,executor}` 槽位子智能体；git 快照越权核对，改动必须落在 brief 范围内。
+- 需要设计评审、独立验证门禁、跨模块重构或公共接口变更时，建议改用 dev-pipeline（可并用）。
