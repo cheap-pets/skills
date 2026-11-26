@@ -26,7 +26,8 @@ npx skills add git@github.com:cheap-pets/skills.git --skill dev-pipeline
 
 | 技能名称 | 更新时间 |
 |----------|----------|
-| [dev-pipeline](./skills/dev-pipeline) | 2026-11-18 |
+| [dev-pipeline](./skills/dev-pipeline) | 2026-11-25 |
+| [code-layout](./skills/code-layout) | 2026-11-26 |
 | [code-struct](./skills/code-struct) | 2026-11-18 |
 | [code-comments](./skills/code-comments) | 2026-11-18 |
 | [code-restruct](./skills/code-restruct) | 2026-11-18 |
@@ -62,6 +63,19 @@ node skills/dev-pipeline/scripts/pipeline-ctl.mjs install --target <宿主的 su
 - **impl-verify**：已有确认的设计——实施 → 范围核对 → 独立验证 → 修复。
 - **bugfix-verify**：缺陷根因未明——定位 → 修复方案 → 修复 + 验证。
 - **单点 / 临时组合**：也可只点名单个角色，或点名多个角色按依赖顺序协作。
+
+
+
+### code-layout
+
+代码纵向排版规范技能——用空行按意图分段、规范引入语句顺序。
+
+适用：新写、大段改写或重构代码；单行小改不需要。
+触发：写码时自动激活；用户提到排版、分段、空行、整理引入语句、"代码太挤"时也触发。
+
+- 只管空行分段与引入语句排序；符号、缩进、引号、行宽交给 linter/formatter，项目已强制的规则优先。
+- 引入语句按「标准库 / 外部依赖 / 项目内部」分组排序；JS/TS/Vue 新建或整体重构时运行脚本自动排序。
+- 默认只调整本次编写或修改的代码，不顺手重排无关行；用户要求批量重排时例外。
 
 
 
