@@ -1,16 +1,17 @@
 # JS / TS / Vue import 排序
 
-脚本：`scripts/sort-imports.cjs`。规则以脚本为准，修改规则时同步改脚本头部注释与本文。
+脚本：`scripts/sort-imports.cjs`。规则以脚本为准，修改规则时同步更新脚本头部注释与本文。
 
 ## 用法
 
 ```bash
-node scripts/sort-imports.cjs <文件...> [--dry-run]
+node <skill目录>/scripts/sort-imports.cjs <路径...> [--dry-run]
 ```
 
-- `--dry-run`：只列出会被修改的文件，不写盘。
+- 必须显式传入文件或目录路径；无参或传入未知 `-` / `--` 选项时直接报错退出，防止误改整个仓库。
+- `--dry-run`：只列出会被修改的文件，不写盘；批量传目录时必须先用此选项确认清单。
+- 传目录会递归处理支持的扩展名（自动跳过 `node_modules`、`.git`、`dist`、`build`、`.next`、`.nuxt`、`coverage`）。
 - `.vue` 只处理 `<script>` 块（含 `<script setup>`、`lang="ts"`），模板与样式不动。
-- 传目录会递归处理（跳过 `node_modules`、`.git`、`dist`），无参数处理当前目录；skill 内不这样用。
 
 ## 分组
 
@@ -31,18 +32,19 @@ node scripts/sort-imports.cjs <文件...> [--dry-run]
 | 11 | css / html / side-effect | 任意 | `import './a.css'`、`import 'reflect-metadata'` |
 | 12 | 资源文件 | 任意 | `import logo from './logo.svg'` |
 
-- 本地路径：以 `./`、`../`、`@/`、`~` 开头。其余非内置来源（含 `#/`、`src/` 等别名）一律按外部包处理。
-- `import type` 与普通 import 同组。
+- Node 内置包：自动识别 `node:` 前缀与当前 Node 运行时的 `module.builtinModules`。
+- 本地路径：`.`、`..` 或以 `./`、`../`、`@/`、`~` 开头。其余非内置来源（含 `#/`、`src/` 等别名）一律按外部包处理。
+- `import type` 与普通 import 同组；支持 ES Import Attributes（`with` / `assert`）。
 
 ## 组内顺序
 
-- 按整条语句文本长度升序，长度相同按字母序（第 11 组除外，保留原相对顺序以避免破坏样式层叠与副作用执行顺序）。
+- 按导入语句本体（不含紧贴的前导说明注释）的文本长度升序，长度相同按字母序（第 11 组除外，保留原相对顺序以避免破坏样式层叠与副作用执行顺序）。
 - 被注释掉的 import 参与分组，排在该组末尾（第 11 组保留原位）。
-- 紧贴 import 上方的注释跟随该 import 移动。
+- 紧贴 import 上方的说明注释跟随该 import 移动；文件头注释与文件级指令（如 `@ts-nocheck`、`/* eslint-disable */`）始终保留在顶部，不会被移走。若文件顶部首条注释无空行紧贴第一条 import（且非单行 lint/ts 指令），脚本按文件头保守留顶、不跟随移动。
 
 ## 行为与限制
 
-- 只处理文件顶部（shebang、指令、文件头注释之后）的第一个连续 import 块；若顶部无 import 直接跳过，避免误改正文中的字符串或注释。
-- 块内原有空行先清除再重排；块外空行保留；LF / CRLF 保持原样。
+- 只处理文件顶部（shebang、指令、文件头注释之后）的第一个连续 import 块；若顶部无 import 或遇到无法闭合的异常语句，直接跳过原样返回。
+- 块内原有空行先清除再重排，引入区与正文之间规范为 1 个空行；其余空行及 LF / CRLF、BOM 保持原样。
 - 动态 `import()`、`import.meta` 不视为 import 语句。
 - 第 11 组整体排在常规 import 之后；要求最先执行的裸 side-effect import（如 `reflect-metadata`、polyfill）不要交给脚本，改为手动保序。
